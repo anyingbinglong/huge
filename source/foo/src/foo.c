@@ -3,5 +3,5 @@
 
 void foo()
 {
-	printf("%s, this is foo()!)\n", HELLO);
+	printf("%s, this is foo()!\n", HELLO);
 }

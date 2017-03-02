@@ -5,8 +5,15 @@ RM = rm
 RMFLAGS = -fr
 
 CC = gcc
+# 此处可以自定义编译选项
+CFLAGS = -W -Wall -g
+
+# 生成静态链接库的命令
 AR = ar
 ARFLAGS = crs
+
+# 生成动态链接库的命令
+SHARE := -shared
 
 DIR_OBJS = objs
 DIR_EXES = $(ROOT)/build/exes
@@ -40,7 +47,7 @@ all: $(LIB)
 endif
 
 ifneq ($(MAKECMDGOALS), clean)
-include $(DEPS)
+-include $(DEPS)
 endif
 
 ifneq ($(INC_DIRS), "")
@@ -58,9 +65,15 @@ $(DIRS):
 $(EXE): $(DIR_EXES) $(OBJS)
 	$(CC) -L $(DIR_LIBS) -o $@ $(filter %.o, $^) $(LINK_LIBS)
 $(LIB): $(DIR_LIBS) $(OBJS)
-	$(AR) $(ARFLAGS) $@ $(filter %.o, $^)
+	# 生成静态链接库的命令
+	# $(AR) $(ARFLAGS) $@ $(filter %.o, $^)
+	# 生成动态链接库的命令
+	$(CC) $(SHARE) -o $@ $(filter %.o, $^) 
 $(DIR_OBJS)/%.o: $(DIR_OBJS) %.c
-	$(CC) $(INC_DIRS) -o $@ -c $(filter %.c, $^)
+	# 生成静态链接库的命令
+	# $(CC) $(INC_DIRS) -o $@ -c $(filter %.c, $^)
+	# 生成动态链接库的命令
+	$(CC) $(INC_DIRS) $(CFLAGS) -fPIC -o $@ -c $(filter %.c, $^)
 $(DIR_DEPS)/%.dep: $(DIR_DEPS) %.c
 	@echo "Making $@..."
 	set -e;\
